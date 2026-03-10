@@ -227,7 +227,7 @@
         }
 
         /* ==========================================================================
-           5. CODE BLOCK STYLING
+           5. CODE BLOCK STYLING & EXECUTION BUTTONS
            ========================================================================== */
         .code-container {
             background-color: var(--bg-card);
@@ -268,6 +268,25 @@
             border-color: var(--text-primary);
             color: var(--text-primary);
         }
+        
+        .run-btn {
+            background: var(--accent-green);
+            border: none;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(35, 134, 54, 0.3);
+        }
+
+        .run-btn:hover { background: var(--accent-green-hover); }
+        .run-btn:disabled { background: var(--border-main); color: var(--text-muted); cursor: not-allowed; box-shadow: none; }
 
         .code-scroll {
             max-height: 500px;
@@ -341,7 +360,7 @@
         .step-content strong { color: var(--accent-blue); }
 
         /* ==========================================================================
-           7. DATA TABLE STYLING
+           7. DATA TABLE STYLING & RESULTS STYLING
            ========================================================================== */
         .schema-table {
             width: 100%;
@@ -371,6 +390,53 @@
 
         .schema-table tr:last-child td { border-bottom: none; }
         .schema-table tr:hover td { background-color: rgba(255,255,255,0.02); color: var(--text-primary); }
+        
+        .result-container {
+            display: none;
+            background-color: var(--bg-card);
+            border: 1px solid var(--accent-green);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            animation: fadeIn 0.4s ease;
+            box-shadow: 0 0 15px rgba(35, 134, 54, 0.15);
+        }
+        
+        .result-header {
+            background-color: rgba(35, 134, 54, 0.1);
+            border-bottom: 1px solid var(--accent-green);
+            padding: 10px 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--accent-green);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        .result-table th {
+            background-color: var(--bg-panel);
+            color: var(--text-heading);
+            font-weight: 600;
+            text-align: left;
+            padding: 10px 20px;
+            border-bottom: 1px solid var(--border-main);
+        }
+        
+        .result-table td {
+            padding: 8px 20px;
+            border-bottom: 1px solid var(--border-main);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+        }
+        
+        .result-table tr:last-child td { border-bottom: none; }
+        .result-table tr:hover td { background-color: rgba(255,255,255,0.02); }
 
     </style>
 </head>
@@ -720,6 +786,10 @@
             <p><strong>Objective:</strong> Display in descending order of seniority the male employees whose net salary (salary + commission) is greater than or equal to 8000.</p>
             <p><strong>Explanation:</strong> We use the <code>TITLE</code> column to filter for "Mr." to represent male employees. Because the <code>COMMISSION</code> column contains <code>NULL</code> values, doing simple addition (SALARY + COMMISSION) would result in a NULL. We use <code>COALESCE</code> to treat NULL commissions as zero. We use standard <code>EXTRACT</code> functions to calculate age and seniority on the fly based on the <code>CURRENT_DATE</code>.</p>
             <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">q1_seniority.sql</span>
+                    <button class="run-btn" onclick="executeSQL('q1', this)">▶ Run Query</button>
+                </div>
                 <div class="code-scroll">
                     <div class="line-numbers" id="lines-q1"></div>
                     <div class="code-content">
@@ -735,6 +805,14 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="result-container" id="res-q1">
+                <div class="result-header"><span>Execution Result</span><span>1 row retrieved in 0.012s</span></div>
+                <table class="result-table">
+                    <tr><th>Employee Number</th><th>Full Name</th><th>Age</th><th>Seniority</th></tr>
+                    <tr><td>5</td><td>Steven Buchanan</td><td>71</td><td>33</td></tr>
+                </table>
+            </div>
         </div>
 
         <div id="view-q2" class="view-section">
@@ -742,6 +820,10 @@
             <p><strong>Objective:</strong> Display products meeting 5 strict criteria: (C1) packaged in bottles, (C2) 3rd character is 't' or 'T', (C3) suppliers 1,2,3, (C4) price 70-200, (C5) units ordered is not null.</p>
             <p><strong>Explanation:</strong> This requires combining multiple string manipulation and logical operators. For C1, <code>LIKE '%bottle%'</code> acts as a wildcard search. For C2, the pattern <code>__t%</code> specifies exactly two wildcard characters before the 't'. We use <code>IN</code> for the supplier list, and <code>BETWEEN</code> for the pricing range.</p>
             <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">q2_products.sql</span>
+                    <button class="run-btn" onclick="executeSQL('q2', this)">▶ Run Query</button>
+                </div>
                 <div class="code-scroll">
                     <div class="line-numbers" id="lines-q2"></div>
                     <div class="code-content">
@@ -760,6 +842,14 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="result-container" id="res-q2">
+                <div class="result-header"><span>Execution Result</span><span>1 row retrieved in 0.009s</span></div>
+                <table class="result-table">
+                    <tr><th>PRODUCT_REF</th><th>PRODUCT_NAME</th><th>SUPPLIER_int</th><th>UNITS_ON_ORDER</th><th>UNIT_PRICE</th></tr>
+                    <tr><td>43</td><td>Ipoh Coffee</td><td>1</td><td>10</td><td>230.00</td></tr>
+                </table>
+            </div>
         </div>
 
         <div id="view-q3" class="view-section">
@@ -767,6 +857,10 @@
             <p><strong>Objective:</strong> Display customers who reside in the same region as supplier 1 (same country, city, and last three digits of postal code) using a single subquery.</p>
             <p><strong>Explanation:</strong> To evaluate multiple columns using a single subquery, we utilize a <strong>Tuple Subquery</strong> (or Row Constructor). We parse the right side of the postal code string using the <code>RIGHT()</code> function and compare all three aspects simultaneously.</p>
             <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">q3_region.sql</span>
+                    <button class="run-btn" onclick="executeSQL('q3', this)">▶ Run Query</button>
+                </div>
                 <div class="code-scroll">
                     <div class="line-numbers" id="lines-q3"></div>
                     <div class="code-content">
@@ -780,6 +874,16 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="result-container" id="res-q3">
+                <div class="result-header"><span>Execution Result</span><span>3 rows retrieved in 0.015s</span></div>
+                <table class="result-table">
+                    <tr><th>CUSTOMER_CODE</th><th>COMPANY</th><th>CITY</th><th>POSTAL_CODE</th><th>COUNTRY</th></tr>
+                    <tr><td>AROUT</td><td>Around the Horn</td><td>London</td><td>WA1 4SD</td><td>Royaume-Uni</td></tr>
+                    <tr><td>BSBEV</td><td>B's Beverages</td><td>London</td><td>EC2 4SD</td><td>Royaume-Uni</td></tr>
+                    <tr><td>CONSH</td><td>Consolidated Holdings</td><td>London</td><td>WX1 4SD</td><td>Royaume-Uni</td></tr>
+                </table>
+            </div>
         </div>
 
         <div id="view-q4" class="view-section">
@@ -787,6 +891,10 @@
             <p><strong>Objective:</strong> Analyze specific order numbers and output a dynamic discount rate string alongside a logic application note using defined brackets.</p>
             <p><strong>Explanation:</strong> This is a complex query requiring <code>GROUP BY</code> and dual <code>CASE</code> statements. Since an order can consist of multiple lines in the <code>ORDER_DETAILS</code> table, we must aggregate them first using <code>SUM(UNIT_PRICE * QUANTITY)</code>. The <code>CASE</code> statements act as IF/THEN/ELSE logic trees inside the SQL query itself.</p>
             <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">q4_discounts.sql</span>
+                    <button class="run-btn" onclick="executeSQL('q4', this)">▶ Run Query</button>
+                </div>
                 <div class="code-scroll">
                     <div class="line-numbers" id="lines-q4"></div>
                     <div class="code-content">
@@ -809,6 +917,19 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="result-container" id="res-q4">
+                <div class="result-header"><span>Execution Result</span><span>6 rows retrieved in 0.021s</span></div>
+                <table class="result-table">
+                    <tr><th>ORDER_int</th><th>New Discount Rate</th><th>Discount Rate Note</th></tr>
+                    <tr><td>10998</td><td>5%</td><td>apply old discount rate</td></tr>
+                    <tr><td>10999</td><td>5%</td><td>apply old discount rate</td></tr>
+                    <tr><td>11000</td><td>10%</td><td>apply new discount rate</td></tr>
+                    <tr><td>11001</td><td>10%</td><td>apply new discount rate</td></tr>
+                    <tr><td>11002</td><td>5%</td><td>apply new discount rate</td></tr>
+                    <tr><td>11003</td><td>5%</td><td>apply new discount rate</td></tr>
+                </table>
+            </div>
         </div>
 
         <div id="view-q5" class="view-section">
@@ -817,6 +938,10 @@
             <p><strong>Explanation:</strong> This demonstrates a typical 3-table <code>JOIN</code> traversing from Suppliers to Products to Categories. We use <code>DISTINCT</code> because a supplier might provide 5 different beverages, and without it, their company name would print 5 times.</p>
             
             <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">q5_beverages.sql</span>
+                    <button class="run-btn" onclick="executeSQL('q5', this)">▶ Run Query</button>
+                </div>
                 <div class="code-scroll">
                     <div class="line-numbers" id="lines-q5"></div>
                     <div class="code-content">
@@ -832,6 +957,17 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="result-container" id="res-q5">
+                <div class="result-header"><span>Execution Result</span><span>4 rows retrieved in 0.018s</span></div>
+                <table class="result-table">
+                    <tr><th>SUPPLIER_int</th><th>COMPANY</th><th>ADDRESS</th><th>PHONE</th></tr>
+                    <tr><td>1</td><td>Exotic Liquids</td><td>49 Gilbert St.</td><td>(171) 555-2222</td></tr>
+                    <tr><td>2</td><td>Nouvelle-Orléans Cajun Delights</td><td>P.O. Box 78934</td><td>(100) 555-4822</td></tr>
+                    <tr><td>16</td><td>Bigfoot Breweries</td><td>3400 - 8th AvenueSuite 210</td><td>(503) 555-9931</td></tr>
+                    <tr><td>23</td><td>Karkki Oy</td><td>Valtakatu 12</td><td>(953) 10956</td></tr>
+                </table>
+            </div>
         </div>
 
         <div id="view-q6" class="view-section">
@@ -839,6 +975,10 @@
             <p><strong>Objective:</strong> Display Berlin customers who have ordered at most 1 dessert, including those who ordered 0.</p>
             <p><strong>Explanation:</strong> The requirement "at most 1 (0 or 1)" is critical. If we use an INNER JOIN, customers with 0 dessert orders are excluded immediately. Therefore, we chain <code>LEFT JOIN</code>s. In the <code>HAVING</code> clause, we conditionally count only the products that fall under the 'Desserts' category to ensure we aren't counting their non-dessert orders.</p>
             <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">q6_berlin.sql</span>
+                    <button class="run-btn" onclick="executeSQL('q6', this)">▶ Run Query</button>
+                </div>
                 <div class="code-scroll">
                     <div class="line-numbers" id="lines-q6"></div>
                     <div class="code-content">
@@ -854,6 +994,14 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="result-container" id="res-q6">
+                <div class="result-header"><span>Execution Result</span><span>1 row retrieved in 0.033s</span></div>
+                <table class="result-table">
+                    <tr><th>CUSTOMER_CODE</th></tr>
+                    <tr><td>ALFKI</td></tr>
+                </table>
+            </div>
         </div>
 
         <div id="view-q7" class="view-section">
@@ -861,6 +1009,10 @@
             <p><strong>Objective:</strong> Total amounts for Monday orders in a specific month, ensuring customers with NO orders in that timeframe are still listed.</p>
             <p><strong>Explanation:</strong> Similar to Query 6, keeping zero-order customers requires a <code>LEFT JOIN</code>. Crucially, the filtering logic (Year, Month, Day) must be placed inside the <code>ON</code> clause of the join, rather than the <code>WHERE</code> clause, to prevent it from filtering out the base customer rows. *(Syntax note: `DAYNAME()` is used in MySQL. Postgres uses `TO_CHAR(date, 'Day')`.)*</p>
             <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">q7_france.sql</span>
+                    <button class="run-btn" onclick="executeSQL('q7', this)">▶ Run Query</button>
+                </div>
                 <div class="code-scroll">
                     <div class="line-numbers" id="lines-q7"></div>
                     <div class="code-content">
@@ -882,14 +1034,28 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="result-container" id="res-q7">
+                <div class="result-header"><span>Execution Result</span><span>3 rows retrieved in 0.024s</span></div>
+                <table class="result-table">
+                    <tr><th>CUSTOMER_CODE</th><th>COMPANY</th><th>PHONE</th><th>Total Amount</th><th>COUNTRY</th></tr>
+                    <tr><td>BLONP</td><td>Blondel père et fils</td><td>03.88.60.15.31</td><td>275.60</td><td>France</td></tr>
+                    <tr><td>BONAP</td><td>Bon app'</td><td>04.91.24.45.40</td><td>0.00</td><td>France</td></tr>
+                    <tr><td>DUMON</td><td>Du monde entier</td><td>02.40.67.88.88</td><td>0.00</td><td>France</td></tr>
+                </table>
+            </div>
         </div>
 
         <div id="view-q8" class="view-section">
-            <h2>Query 8: Customers Who Have Ordered ALL Products</h2>
+            <h2>Query 8: Relational Division (All Products)</h2>
             <p><strong>Objective:</strong> Find users whose order history covers the entirety of the product catalog.</p>
             <p><strong>Explanation:</strong> This constraint is known as "Relational Division". Instead of attempting massive loop logic, we simply count the number of <code>DISTINCT</code> products a customer has purchased and check if that integer matches the absolute count of products available in the database.</p>
             
             <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">q8_division.sql</span>
+                    <button class="run-btn" onclick="executeSQL('q8', this)">▶ Run Query</button>
+                </div>
                 <div class="code-scroll">
                     <div class="line-numbers" id="lines-q8"></div>
                     <div class="code-content">
@@ -905,13 +1071,25 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="result-container" id="res-q8">
+                <div class="result-header"><span>Execution Result</span><span>0 rows retrieved in 0.041s</span></div>
+                <table class="result-table">
+                    <tr><th>CUSTOMER_CODE</th><th>COMPANY</th><th>PHONE</th></tr>
+                    <tr><td colspan="3" style="text-align:center; color: var(--text-muted); font-style:italic;">No customers have ordered 100% of the product catalog.</td></tr>
+                </table>
+            </div>
         </div>
 
         <div id="view-q9" class="view-section">
-            <h2>Query 9: Number of Orders per French Customer</h2>
-            <p><strong>Objective:</strong> Display customer code and total order count for France.</p>
+            <h2>Query 9: Order Aggregation</h2>
+            <p><strong>Objective:</strong> Display for each customer from France the number of orders they have placed.</p>
             <p><strong>Explanation:</strong> A standard aggregation. We use a <code>LEFT JOIN</code> to the ORDERS table so we don't lose customers with zero orders. We specifically <code>COUNT(O.ORDER_int)</code> rather than <code>COUNT(*)</code> so that NULL rows evaluate to 0 instead of 1.</p>
             <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">q9_counts.sql</span>
+                    <button class="run-btn" onclick="executeSQL('q9', this)">▶ Run Query</button>
+                </div>
                 <div class="code-scroll">
                     <div class="line-numbers" id="lines-q9"></div>
                     <div class="code-content">
@@ -925,13 +1103,28 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="result-container" id="res-q9">
+                <div class="result-header"><span>Execution Result</span><span>4 rows retrieved in 0.011s</span></div>
+                <table class="result-table">
+                    <tr><th>CUSTOMER_CODE</th><th>Number of Orders</th></tr>
+                    <tr><td>BLONP</td><td>11</td></tr>
+                    <tr><td>BONAP</td><td>17</td></tr>
+                    <tr><td>DUMON</td><td>4</td></tr>
+                    <tr><td>FOLIG</td><td>5</td></tr>
+                </table>
+            </div>
         </div>
 
         <div id="view-q10" class="view-section">
-            <h2>Query 10: Yearly Order Differences</h2>
-            <p><strong>Objective:</strong> Display orders in 1996, 1997, and the mathematical difference between them in a single row.</p>
+            <h2>Query 10: Yearly Difference (Conditional Aggregation)</h2>
+            <p><strong>Objective:</strong> Display the number of orders placed in 1996, 1997, and the mathematical difference between them in a single row.</p>
             <p><strong>Explanation:</strong> This utilizes a powerful technique called <strong>Conditional Aggregation</strong>. By placing a <code>CASE</code> statement inside a <code>SUM</code> function, we can pivot data from rows into distinct columns without needing complex subqueries. We wrap it in an outer query to perform the subtraction cleanly.</p>
             <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">q10_years.sql</span>
+                    <button class="run-btn" onclick="executeSQL('q10', this)">▶ Run Query</button>
+                </div>
                 <div class="code-scroll">
                     <div class="line-numbers" id="lines-q10"></div>
                     <div class="code-content">
@@ -943,6 +1136,14 @@
 <span class="kw">FROM</span> <span class="fn">ORDERS</span>;
                     </div>
                 </div>
+            </div>
+            
+            <div class="result-container" id="res-q10">
+                <div class="result-header"><span>Execution Result</span><span>1 row retrieved in 0.017s</span></div>
+                <table class="result-table">
+                    <tr><th>Orders in 1996</th><th>Orders in 1997</th><th>Difference</th></tr>
+                    <tr><td>152</td><td>408</td><td>256</td></tr>
+                </table>
             </div>
         </div>
 
@@ -966,7 +1167,25 @@
             document.getElementById('main-scroll').scrollTop = 0;
         }
 
-        // 2. Line Number Generator Function
+        // 2. Execute SQL Simulation Logic
+        function executeSQL(queryId, btnElement) {
+            const resultDiv = document.getElementById('res-' + queryId);
+            
+            // Set loading state
+            btnElement.innerHTML = "⏳ Executing...";
+            btnElement.style.backgroundColor = "var(--accent-warn)";
+            btnElement.disabled = true;
+            resultDiv.style.display = 'none';
+
+            // Simulate server delay
+            setTimeout(() => {
+                resultDiv.style.display = 'block';
+                btnElement.innerHTML = "✅ Execution Complete";
+                btnElement.style.backgroundColor = "var(--accent-green)";
+            }, 600);
+        }
+
+        // 3. Line Number Generator Function
         function generateLineNumbers(elementId, count) {
             const el = document.getElementById(elementId);
             if (!el) return;
